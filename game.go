@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bufio"
+	//"bufio"
 	"fmt"
 	"os"
 )
@@ -22,15 +22,15 @@ func main(){
 	x := "Hello, World!"
 
 	//Scanner main
-	intake := bufio.NewScanner(os.Stdin)
+	//intake := bufio.NewScanner(os.Stdin)
 
 	// Game state start with text
-	fmt.Printf("Well here is the first line I type for G, as per usual: %s", x)
+	fmt.Printf("Well here is the first line I type for Go, as per usual: %s", x)
 	fmt.Println("What is your name, challenger?")
 
-	pname := intake.Text()
+	//pname := intake.Text()
 
-	if gameinit(pname){
+	/* if gameinit(pname){
 		end()
-	}
+	} */
 }
