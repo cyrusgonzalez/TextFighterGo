@@ -1,9 +1,3 @@
-// Package main is the terminal entrypoint. It lives under cmd/textfighter
-// instead of the repo root — that's the standard Go project layout: each
-// buildable program gets its own folder under cmd/, and internal/ holds
-// the packages that back it. Right now there's one binary (this terminal
-// game); once we add a network server, it'll likely get its own
-// cmd/server folder reusing the exact same internal/game package.
 package main
 
 import (
@@ -17,9 +11,7 @@ import (
 )
 
 func main() {
-	// bufio.Scanner reads stdin line by line. This replaces game.py's
-	// input() calls — Go has no built-in input(); reading stdin is always
-	// this explicit "wrap os.Stdin, then .Scan()/.Text()" dance.
+
 	reader := bufio.NewScanner(os.Stdin)
 
 	fmt.Println("Prepare to battle to the death!!!")
@@ -39,10 +31,9 @@ func main() {
 	}
 }
 
-// playMatch runs one fight to completion. game.py did this recursively
-// (main() calling itself again to replay) — Go favors the plain for-loop
-// in main() above instead; recursion here would just grow the call stack
-// for no reason.
+// main game loop
+// on Match struct bool loop
+// remove forever for with prompt - done
 func playMatch(reader *bufio.Scanner, p1, p2 *game.Player) {
 	m := game.NewMatch(p1, p2)
 	fmt.Printf("\nFight between %s and %s! FIGHT!\n\n", p1.Name, p2.Name)
@@ -74,12 +65,9 @@ func playMatch(reader *bufio.Scanner, p1, p2 *game.Player) {
 	}
 }
 
-// chooseWeapon prompts until it gets a valid weapon number. game.py's
-// equivalent (`int(input(...))`) just crashes with an uncaught exception on
-// bad input. Go has no exceptions at all — strconv.Atoi returns (int,
-// error) instead of throwing, and the `err != nil` check is how you handle
-// "that wasn't valid" without a try/except anywhere in sight. You'll see
-// this (value, error) return pattern constantly in Go.
+
+// Weapon selection function each turn
+// pull from Struct Weapon
 func chooseWeapon(reader *bufio.Scanner, name string) game.Weapon {
 	for {
 		fmt.Printf("%s, choose your weapon (1=Ax, 2=Sword, 3=Club): ", name)
@@ -99,6 +87,7 @@ func chooseWeapon(reader *bufio.Scanner, name string) game.Weapon {
 }
 
 // prompt prints msg, reads one line of stdin, and returns it trimmed.
+// hit message on attack
 func prompt(reader *bufio.Scanner, msg string) string {
 	fmt.Print(msg)
 	reader.Scan()

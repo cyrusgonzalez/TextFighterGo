@@ -1,3 +1,5 @@
 .DS_Store
 game.py
-internal/
+# internal/
+cmd/textfighter/main.md
+internal/knowledge.md

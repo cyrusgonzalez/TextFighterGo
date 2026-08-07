@@ -1,0 +1,18 @@
+# See docs/docker-notes.md. This currently runs just the game itself.
+# The commented block below is where a Kafka broker will get added once
+# we reach that phase — left in place now so the shape of "one file =
+# the whole system" is visible early, not bolted on later.
+
+services:
+  game:
+    build: .
+    stdin_open: true # docker's equivalent of `docker run -i`
+    tty: true # docker's equivalent of `docker run -t`
+
+  # kafka:
+  #   image: apache/kafka:3.8.0
+  #   ports:
+  #     - "9092:9092"
+  #   # Modern Kafka runs in KRaft mode and no longer needs a separate
+  #   # Zookeeper container - that's the older pattern you'll see in most
+  #   # tutorials. We'll fill in the KRaft env vars when we get here.
