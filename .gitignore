@@ -3,3 +3,7 @@ game.py
 # internal/
 cmd/textfighter/main.md
 internal/knowledge.md
+internal/session/session.md
+internal/game/weapon.md
+internal/game/player.md
+internal/game/match.md
