@@ -1,5 +1,7 @@
 .DS_Store
 game.py
-# internal/
+test.sh
+testmp.sh
 cmd/textfighter/main.md
-internal/knowledge.md
+docs/
+docs/docker
