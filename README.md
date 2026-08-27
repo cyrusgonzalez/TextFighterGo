@@ -1,37 +1,41 @@
 # TextFighterGo
 
-A text-based, turn-based fighting game, originally a Python passion project
-from high school, now being rewritten in Go as a hands-on way to learn the
-language — structs and methods instead of classes, explicit error handling
-instead of exceptions, goroutines instead of threads — with an eye toward a
-larger, more realistic system (networked play, containerization) and, from
-here, real gameplay depth.
+A text-based fighting game, originally a Python passion project from high
+school, now being rewritten in Go as a hands-on way to learn the language —
+structs and methods instead of classes, explicit error handling instead of
+exceptions, goroutines instead of threads — with an eye toward real
+gameplay depth from here.
 
 ## Version 1.0
 
-**Requirements:** 2 players, local, in one CLI session; also runnable in a
-Docker container.
+**Requirements:** 2 players, offline, either sharing one CLI session or
+connected over TCP; also runnable in a Docker container.
 
 What works today:
 
-- Two players take turns fighting at the same terminal.
+- Two players fight it out, round by round, both choosing an action
+  simultaneously each round — neither sees the other's pick before
+  committing to their own.
 - Each player starts at 250 HP.
-- Three weapons — Ax, Sword, Club — each with its own damage range, crit
-  chance, and miss chance.
-- A full match: random starting turn, turn-by-turn attacks, live HP
-  tracking, win detection, and a "fight again?" prompt to replay.
+- Attack with one of three weapons — Ax, Sword, Club — each with its own
+  damage range, crit chance, and miss chance.
+- Or play defense instead of attacking: Block/Armor up (flat damage
+  reduction), Dodge (chance to fully avoid the hit), or Counter (reflect
+  the incoming attack back at your opponent if they attacked into it).
+- Full match flow: live HP tracking, win detection, draws (both players
+  falling the same round), and a "fight again?" prompt to replay.
 - Runs directly with the Go toolchain, or as a Docker container.
-- Optional network play: one person hosts on a port, a second player
-  connects in over TCP as the opponent — no custom client needed, any
-  plain TCP client (e.g. `nc`) works as the joining side.
+- Network play: one person hosts on a port, a second player connects in
+  over TCP as the opponent — no custom client needed, any plain TCP
+  client (e.g. `nc`) works as the joining side.
 
 Not built yet:
 - A dedicated join client / real SSH transport (right now "joining" means
-  pointing a generic TCP client like `nc` at the host). See **Roadmap** below.
-- _Armor/Block under construction_
-- Skill tree/campaign backstory log
-- PVE bossing/routes
+  pointing a generic TCP client like `nc` at the host).
+- Classes/backgrounds (player archetypes affecting available actions).
+- Skill tree/campaign backstory log, PVE bossing/routes.
 
+See **Roadmap** below for what's next.
 
 ## Running it
 
@@ -71,9 +75,9 @@ nc <host-address> 9000
 
 | Path | What it is |
 |---|---|
-| `cmd/textfighter/` | The terminal entrypoint — wires the game logic up to stdin/stdout. |
-| `internal/game/` | Core game rules: `Player`, `Weapon`, `Match`. No I/O, no networking — just the logic of a fight. |
-| `internal/producer/`, `internal/consumer/` | Leftover placeholders from an earlier Kafka idea, since dropped from scope (see Roadmap). Unused. |
+| `cmd/textfighter/` | The terminal entrypoint — wires the game logic up to stdin/stdout or a network connection, and hosts a match when `-listen` is passed. |
+| `internal/game/` | Core game rules: `Player`, `Weapon`, `Action`, `Match`. No I/O, no networking — just the logic of a fight. |
+| `internal/session/` | Wraps a player's input/output behind `io.Reader`/`io.Writer`, so the same game logic works over a local terminal or a network connection. |
 | `docs/docker-notes.md` | A Docker primer, plus notes on this repo's `Dockerfile`/`docker-compose.yml`. |
 | `Dockerfile`, `docker-compose.yml` | Build and run the game in a container. |
 | `game.py` | The original Python prototype this is being ported from. Kept locally for reference; not part of the Go build. |
@@ -85,21 +89,14 @@ Built in phases, roughly in this order:
 1. ~~**Networking.**~~ ✅ Done — one person hosts over TCP, a second player
    connects in as the opponent, running match stats stay in the host's
    process.
-2. **Simultaneous combat.** Replace strict turn order with both players
-   choosing an action each round at the same time — attack (pick a
-   weapon) or a defensive option (block/armor up, dodge, counterattack) —
-   resolved together instead of one-at-a-time.
+2. ~~**Simultaneous combat.**~~ ✅ Done — both players choose an action
+   each round at the same time (attack or a defensive option), resolved
+   together instead of one-at-a-time.
 3. **Classes/backgrounds (stretch).** Player archetypes that affect which
    actions are available or how they perform.
 4. **SSH transport (stretch).** Swap the network layer for a real SSH
    server, so a second player can join with a plain `ssh` command instead
    of a generic TCP client like `nc`.
-
-Kafka and Flink were previously planned here as a learning exercise but
-have been dropped as redundant with other, dedicated practice elsewhere —
-this project's scope is the game itself: Go, networking, and gameplay
-depth. `internal/producer`/`internal/consumer` are unused leftovers from
-that earlier plan.
 
 ## Why this exists
 
